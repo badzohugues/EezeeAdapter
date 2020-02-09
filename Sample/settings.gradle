@@ -1,0 +1,2 @@
+include ':app', ':eezeeadapter'
+rootProject.name='Sample'
