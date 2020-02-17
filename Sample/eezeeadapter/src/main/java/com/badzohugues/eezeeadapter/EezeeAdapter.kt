@@ -1,65 +1,40 @@
 package com.badzohugues.eezeeadapter
 
-/* Builder Class Example:
- class Car( //add private constructor if necessary
-        val model: String?,
-        val year: Int) {
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 
-    private constructor(builder: Builder) : this(builder.model, builder.year)
+class EezeeAdapter<ITEM> : RecyclerView.Adapter<EezeeAdapter.EezeeViewHolder>() {
+    @LayoutRes
+    private var layout: Int = 0
+    private lateinit var onBind: ((View.(ITEM) -> Unit))
+    private var itemClick: ((ITEM.(position: Int) -> Unit)) = { }
 
-    class Builder {
-        var model: String? = null
-            private set
+    var items: List<ITEM> = ArrayList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
-        var year: Int = 0
-            private set
-
-        fun model(model: String) = apply { this.model = model }
-
-        fun year(year: Int) = apply { this.year = year }
-
-        fun build() = Car(this)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EezeeViewHolder {
+        return EezeeViewHolder(parent.inflate(layout))
     }
+
+    override fun onBindViewHolder(holder: EezeeViewHolder, position: Int) {
+        holder.itemView.onBind(items[position])
+        holder.itemView.setOnClickListener { itemClick.invoke(items[position], position) }
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    fun onBind(onBind: View.(ITEM) -> Unit) = apply { this.onBind = onBind }
+
+    fun items(items: List<ITEM>) = apply { this.items = items }
+
+    fun layout(layout: Int) = apply { this.layout = layout }
+
+    fun itemClick(itemClick: ((ITEM.(position: Int) -> Unit))) = apply { this.itemClick = itemClick }
+
+    class EezeeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
-
-Usage: val car = Car.Builder().model("X").build()
-
-Shortened EXAMPLE
-
-class Car (
-        val model: String?,
-        val year: Int
-) {
-
-    private constructor(builder: Builder) : this(builder.model, builder.year)
-
-    companion object {
-        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
-    }
-
-    class Builder {
-        var model: String? = null
-        var year: Int = 0
-
-        fun build() = Car(this)
-    }
-}
-
-Usage: val car = Car.build { model = "X" }
-
-WHAT I WANT
-
-val adapter = EezeeAdapter.build {
-    items = ArrayList<Item>,
-    holder = R.id.item_recyclerview,
-    bind(holder, position) = { holder, position ->
-        val person = items[position]
-        val context= holder.itemView.context
-
-        holder.firstnameTxv.text = "${person.firstname} ${person.lastname}"
-        holder.ageTxv.text = context.getString(R.string.age_text, person.age)
-    }
-}
-
-
-*/
