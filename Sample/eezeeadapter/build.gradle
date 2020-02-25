@@ -4,8 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
-
-
+    viewBinding.enabled = true
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
@@ -22,17 +21,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation kotlinDependencies.kotlinStdLib
-    implementation supportDependencies.appCompat
-    implementation supportDependencies.constraintLayout
-    implementation supportDependencies.recyclerview
-    implementation supportDependencies.material
-    implementation kotlinDependencies.coreKtx
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin_version"
+    api "androidx.appcompat:appcompat:$versions.appCompat_version"
+    api "androidx.constraintlayout:constraintlayout:$versions.constraintlayout_version"
+    api "androidx.recyclerview:recyclerview:$versions.recyclerview_version"
+    api "com.google.android.material:material:$versions.material_version"
+    api "androidx.core:core-ktx:$versions.coreKtx_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
