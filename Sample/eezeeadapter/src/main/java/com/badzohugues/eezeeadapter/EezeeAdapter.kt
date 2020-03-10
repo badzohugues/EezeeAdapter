@@ -4,13 +4,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 
-class EezeeAdapter<ITEM, BINDING: ViewBinding> : RecyclerView.Adapter<EezeeAdapter.EezeeViewHolder>() {
+class EezeeAdapter<ITEM> : RecyclerView.Adapter<EezeeAdapter.EezeeViewHolder>() {
     @LayoutRes
     private var layout: Int = 0
-    lateinit var itemBinding: BINDING
-    private lateinit var onBind: ((View.(ITEM, BINDING) -> Unit))
+    private lateinit var onBind: ((View.(ITEM) -> Unit))
     private var itemClick: ((ITEM.(position: Int) -> Unit)) = { }
 
     var items: List<ITEM> = ArrayList()
@@ -24,13 +22,13 @@ class EezeeAdapter<ITEM, BINDING: ViewBinding> : RecyclerView.Adapter<EezeeAdapt
     }
 
     override fun onBindViewHolder(holder: EezeeViewHolder, position: Int) {
-        holder.itemView.onBind(items[position], itemBinding)
+        holder.itemView.onBind(items[position])
         holder.itemView.setOnClickListener { itemClick.invoke(items[position], position) }
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun onBind(onBind: View.(ITEM, BINDING) -> Unit) = apply { this.onBind = onBind }
+    fun onBind(onBind: View.(ITEM) -> Unit) = apply { this.onBind = onBind }
 
     fun items(items: List<ITEM>) = apply { this.items = items }
 

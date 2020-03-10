@@ -2,6 +2,7 @@ package com.badzohugues.sample.ui.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -9,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.badzohugues.eezeeadapter.EezeeAdapter
 import com.badzohugues.sample.R
 import com.badzohugues.sample.databinding.ActivityHomeBinding
-import com.badzohugues.sample.databinding.ItemRecyclerviewBinding
 import com.badzohugues.sample.model.Person
 import com.badzohugues.sample.ui.home.presenter.HomePresenter
 
@@ -18,7 +18,7 @@ class HomeActivity : AppCompatActivity(), View {
 
     private lateinit var binding: ActivityHomeBinding
     private val presenter by lazy { HomePresenter(this) }
-    private val eezeeAdapter by lazy { EezeeAdapter<Person, ItemRecyclerviewBinding>() }
+    private val eezeeAdapter by lazy { EezeeAdapter<Person>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,18 +39,16 @@ class HomeActivity : AppCompatActivity(), View {
 
         eezeeAdapter.layout(R.layout.item_recyclerview)
             .items(ArrayList())
-            .onBind { item, itemBinding ->
-                with(itemBinding) {
-                    itemFirstnameTxv.text = "${item.firstname} ${item.lastname}"
-                    itemAgeTxv.text = context.getString(R.string.age_text, item.age)
-                }
+            .onBind { item ->
+                val firstNameTxv: TextView = findViewById(R.id.item_firstname_txv)
+                val ageTxv: TextView = findViewById(R.id.item_age_txv)
+                val context= this.context
+
+                firstNameTxv.text = "${item.firstname} ${item.lastname}"
+                ageTxv.text = context.getString(R.string.age_text, item.age)
             }
-            .itemClick { position ->
-                Toast.makeText(
-                    this@HomeActivity,
-                    "Position $position: ${this.firstname} ${this.lastname}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            .itemClick {  position ->
+                Toast.makeText(this@HomeActivity, "Position $position: ${this.firstname} ${this.lastname}", Toast.LENGTH_SHORT).show()
             }
 
         with(binding) {
