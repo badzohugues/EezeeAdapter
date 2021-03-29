@@ -1,4 +1,4 @@
-# EezeeAdapter
+# SplitzAdapter
 
 This is an Android Project which allows Android Developpers to get rid of adapter classes implementation by using a simple Builder class
 
@@ -15,7 +15,7 @@ This is an Android Project which allows Android Developpers to get rid of adapte
 Create your model objects and layouts for your ViewHolder use the adapter like this
 
 ```
-EezeeAdapter<Item>().layout(R.layout.item_recyclerview)
+SplitzAdapter<Item>().layout(R.layout.item_recyclerview)
             .items(ArrayList())
             .onBind { item ->
                 val titleTxv: TextView = findViewById(R.id.item_title_txv)
