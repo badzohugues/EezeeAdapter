@@ -4,41 +4,46 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.badzohugues.splitzadapter.SplitzAdapter
 import com.badzohugues.sample.R
 import com.badzohugues.sample.databinding.ActivityHomeBinding
 import com.badzohugues.sample.misc.SpacingDecoration
 import com.badzohugues.sample.model.Person
-import com.badzohugues.sample.ui.home.presenter.HomePresenter
+import com.badzohugues.sample.ui.home.presenter.HomeViewModel
+import com.badzohugues.splitzadapter.SplitzAdapter
 
 
-class HomeActivity : AppCompatActivity(), View {
+class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private val presenter by lazy { HomePresenter(this) }
+    private val homeViewModel: HomeViewModel by viewModels()
     private val adapter by lazy { SplitzAdapter<Person>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViews()
+        observeData()
         setContentView(binding.root)
         initRecyclerView()
-        presenter.fetchPersons()
     }
 
     private fun initViews() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
     }
 
+    private fun observeData() {
+        homeViewModel.buildList()
+        homeViewModel.persons.observe(this, { adapter.items = it })
+    }
+
     @SuppressLint("SetTextI18n")
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         val decoration = SpacingDecoration(8)
-
-        adapter.layout(R.layout.item_recyclerview)
-            .items(ArrayList())
+        adapter.items(ArrayList())
+            .layout(R.layout.item_recyclerview)
             .onBind { item ->
                 val firstNameTxv: TextView = findViewById(R.id.item_firstname_txv)
                 val ageTxv: TextView = findViewById(R.id.item_age_txv)
@@ -56,9 +61,5 @@ class HomeActivity : AppCompatActivity(), View {
             homeRecyclerview.addItemDecoration(decoration)
             homeRecyclerview.adapter = adapter
         }
-    }
-
-    override fun fillPersons(persons: List<Person>) {
-        adapter.items = persons
     }
 }
